@@ -6,8 +6,12 @@ plugins {
 }
 
 group = 'com.skarim'
-version = '0.0.1-SNAPSHOT'
+version = ''
 sourceCompatibility = '1.8'
+
+war {
+    archivesBaseName = 'api-gateway'
+}
 
 repositories {
     mavenCentral()
@@ -26,6 +30,9 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
 }
 
 dependencyManagement {
