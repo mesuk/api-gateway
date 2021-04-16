@@ -5,16 +5,16 @@ spring:
 
 # Server
 server:
-  port: 8070  # HTTP (Tomcat) port
+  port: 7070  # HTTP (Tomcat) port
 
-my_message: server 8070
+my_message: server 7070
 
 
 # Discovery Server Access
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://134.209.96.223:8761/discovery-server/eureka/
+      defaultZone: http://192.168.0.101:8080/discovery-server/eureka/
   instance:
     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
 
@@ -24,26 +24,36 @@ eureka:
 zuul:
   prefix: /api
   routes:
- #   auth-service:
-#      path: /auth-service/**
-#      serviceId: AUTH-SERVICE
-#      sensitiveHeaders: Cookie,Set-Cookie
-
-    product-service:
-      path: /product-service/**
-      serviceId: PRODUCT-SERVICE
+    user-service:
+      path: /user-service/**
+      serviceId: USER-SERVICE
       sensitiveHeaders: Cookie,Set-Cookie
+  ignoredServices: '*'
+  host:
+      time-to-live: -1
+      connect-timeout-millis: 5000
+      max-per-route-connections: 10000
+      max-total-connections: 5000
+      socket-timeout-millis: 60000
+  semaphore:
+      max-semaphores: 500
 
 
-# Increase the Hystrix timeout to 60s (globally)
 hystrix:
   command:
     default:
       execution:
-        isolation:
+        iso lation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 30000
 
 
-#http://localhost:3333/
-#http://localhost:3333/api-gateway/api/product-service/product-service/products/
+ribbon:
+  ReadTimeout: 60000
+  connection-timeout: 3000
+  eureka:
+    enabled: true
+
+
+
+#http://localhost:7070/api/user-service/user/fetchAllCustomer/

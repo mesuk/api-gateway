@@ -1,36 +1,47 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.0.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
-    id 'war'
+    id "com.palantir.docker" version "0.22.1"
+    id "com.palantir.docker-run" version "0.22.1"
 }
+
+version '0.1'
 
 group = 'com.skarim'
-version = ''
 sourceCompatibility = '1.8'
 
-war {
-    archivesBaseName = 'api-gateway'
+docker {
+    name "${project.name}:${project.version}"
+    dockerfile file('Dockerfile')
+    copySpec.from(jar).rename(".*", "api-gateway.jar")
+    buildArgs(['JAR_FILE': "api-gateway.jar"])
+    files 'api-gateway.jar'
+    tag 'DockerHub', "mesuk08/api-gateway:${project.version}"
 }
+
+dockerRun {
+    name "${project.name}"
+    image "${project.name}:${project.version}"
+    ports '7070:7070'
+    clean true
+}
+
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-    set('springCloudVersion', "Hoxton.M3")
+    set('springCloudVersion', "Hoxton.SR9")
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
 }
