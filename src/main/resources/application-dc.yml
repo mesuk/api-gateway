@@ -34,6 +34,10 @@ zuul:
       path: /user-service/**
       serviceId: USER-SERVICE
       sensitiveHeaders: Cookie,Set-Cookie
+    notification-service:
+      path: /notification-service/**
+      serviceId: NOTIFICATION-SERVICE
+      sensitiveHeaders: Cookie,Set-Cookie
   ignoredServices: '*'
   host:
       time-to-live: -1
@@ -63,3 +67,4 @@ ribbon:
 
 
 #http://localhost:7070/api/user-service/user/fetchAllCustomer/
+#http://localhost:7070/api/notification-service/notification/fetchAllNotification
